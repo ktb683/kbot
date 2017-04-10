@@ -2,18 +2,22 @@
   (:require
    [manifold.deferred :as d]
    [aleph.http :as http]
+   [cprop.core :refer [load-config]]
    [byte-streams :as bs])
   (:gen-class))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
+(def config (load-config))
 
-  ;; Basic get request.
-  (-> @(http/get "https://google.com/"
-                 {;:oauth-token ""
-                  :throw-exceptions false
+(defn send-test-request
+  "Blocking test get example."
+  []
+  (-> @(http/get (:api-root config)
+                 {:throw-exceptions false
                   :as :json})
       :body
       bs/to-string
       prn))
+
+(defn -main
+  "I don't do a whole lot ... yet."
+  [& args])
