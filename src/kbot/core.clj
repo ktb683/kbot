@@ -14,19 +14,26 @@
   (:gen-class))
 
 (def config (load-config))
-(defonce monitors (read-string (slurp "hats.edn")))
 
-(defn terminal-notifier [msg]
-  (with-programs [terminal-notifier]
-    (terminal-notifier
-     "-title" "ProjectX"
-     "-json"
-     "-subtitle" "new tag detected"
-     "-message" "Deploy now on UAT ?"
-     "-closeLabel" "No"
-     "-actions" "Yes")))
+;;(defonce monitors (read-string (slurp "hats.edn")))
+
+(defrecord Notification [id title subtitle message actions])
+
+(defn terminal-notifier [^Notification n]
+  (future
+    (with-programs [terminal-notifier]
+      (terminal-notifier
+       "-json"
+       "-title" (:title n)
+       "-subtitle" (:subtitle n)
+       "-message" (:message n)
+       "-closeLabel" "No"
+       "-actions" (apply str (interpose "," (:actions n)))))))
+
 (comment
-  (terminal-notifier ""))
+  (let [current-notification (Notification. nil "KBOT" "alert -XYZ" "To scale?" #{"Go", "Mo"})
+        res (json/decode @(terminal-notifier current-notification) true)]
+    ((:actions current-notification) (:activationValue res))))
 
 (defn api-get
   "Blocking test get example."
@@ -58,6 +65,7 @@
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (->> monitors
-       find-kbot
-       (map find-code-block)))
+
+  #_(->> monitors
+         find-kbot
+         (map find-code-block)))

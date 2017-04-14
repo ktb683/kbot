@@ -9,6 +9,8 @@
                  [endophile "0.2.1"]
                  [hiccup "1.0.5"]
                  [me.raynes/conch "0.8.0"]
+                 [buddy "1.3.0"]
+                 [org.clojure/core.async "0.3.442"]
                  [aleph "0.4.4-alpha2"]]
   :plugins [[lein-ancient "0.6.10"]]
   :main ^:skip-aot kbot.core
