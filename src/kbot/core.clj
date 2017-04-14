@@ -4,6 +4,10 @@
    [aleph.http :as http]
    [cheshire.core :as json]
    [clojure.string :as s]
+   [clojure.core.async
+    :as a
+    :refer [>! <! >!! <!! go go-loop chan buffer close! thread
+            alts! alts!! timeout]]
    [endophile.core :refer [mp to-clj html-string]]
    [endophile.hiccup :refer [to-hiccup]]
    [hiccup.core :refer [html]]
