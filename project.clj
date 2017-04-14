@@ -8,6 +8,7 @@
                  [cheshire "5.7.0"]
                  [endophile "0.2.1"]
                  [hiccup "1.0.5"]
+                 [me.raynes/conch "0.8.0"]
                  [aleph "0.4.4-alpha2"]]
   :plugins [[lein-ancient "0.6.10"]]
   :main ^:skip-aot kbot.core

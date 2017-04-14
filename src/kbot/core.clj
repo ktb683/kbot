@@ -1,19 +1,32 @@
 (ns kbot.core
   (:require
-    [manifold.deferred :as d]
-    [aleph.http :as http]
-    [cheshire.core :as json]
-    [clojure.string :as s]
-    [endophile.core :refer [mp to-clj html-string]]
-    [endophile.hiccup :refer [to-hiccup]]
-    [hiccup.core :refer [html]]
-    [cprop.core :refer [load-config]]
-    [byte-streams :as bs]
-    [clojure.pprint :refer [pprint]])
+   [manifold.deferred :as d]
+   [aleph.http :as http]
+   [cheshire.core :as json]
+   [clojure.string :as s]
+   [endophile.core :refer [mp to-clj html-string]]
+   [endophile.hiccup :refer [to-hiccup]]
+   [hiccup.core :refer [html]]
+   [cprop.core :refer [load-config]]
+   [byte-streams :as bs]
+   [me.raynes.conch :refer [programs with-programs let-programs] :as sh]
+   [clojure.pprint :refer [pprint]])
   (:gen-class))
 
 (def config (load-config))
 (defonce monitors (read-string (slurp "hats.edn")))
+
+(defn terminal-notifier [msg]
+  (with-programs [terminal-notifier]
+    (terminal-notifier
+     "-title" "ProjectX"
+     "-json"
+     "-subtitle" "new tag detected"
+     "-message" "Deploy now on UAT ?"
+     "-closeLabel" "No"
+     "-actions" "Yes")))
+(comment
+  (terminal-notifier ""))
 
 (defn api-get
   "Blocking test get example."
@@ -36,11 +49,11 @@
 
 (defn find-code-block [monitor]
   (->>
-    (to-hiccup (mp (:message monitor)))
-    (filterv (fn [x] (= :code (first (second x)))))
-    flatten
-    (filterv string?)
-    (assoc monitor :command)))
+   (to-hiccup (mp (:message monitor)))
+   (filterv (fn [x] (= :code (first (second x)))))
+   flatten
+   (filterv string?)
+   (assoc monitor :command)))
 
 (defn -main
   "I don't do a whole lot ... yet."
